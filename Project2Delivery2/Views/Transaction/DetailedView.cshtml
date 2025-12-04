@@ -1,0 +1,212 @@
+﻿@model Project2Delivery2.ViewModels.TransactionDetailViewModel
+
+@{
+    ViewBag.Title = "Detailed Transaction Analysis";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="display-5">Transaction Analysis - @Model.Transaction.TransactionRef</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item"><a asp-action="Index">Transactions</a></li>
+                <li class="breadcrumb-item active">Analysis</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm h-100 @(Model.RiskLevel == "High" ? "border-danger" : Model.RiskLevel == "Medium" ? "border-warning" : "border-success")">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0">Risk Assessment</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="my-4">
+                    <div class="@(Model.RiskLevel == "High" ? "text-danger" : Model.RiskLevel == "Medium" ? "text-warning" : "text-success")">
+                        <div class="display-1 fw-bold">@Model.RiskScore.ToString("P0")</div>
+                        <div class="fs-4">@Model.RiskLevel Risk</div>
+                    </div>
+                </div>
+
+                @if (Model.RiskFactors.Any())
+                {
+                    <div class="text-start mt-4">
+                        <h6 class="text-muted mb-3">Risk Factors Identified:</h6>
+                        <ul class="list-group list-group-flush">
+                            @foreach (var factor in Model.RiskFactors)
+                            {
+                                <li class="list-group-item bg-light border-start border-warning border-3">
+                                    <small>@factor</small>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-light border mt-3" role="alert">
+                        <small class="text-success">No significant risk factors identified</small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0">Transaction Information</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted" style="width: 40%;">Amount:</td>
+                            <td><span class="fs-4 fw-bold text-success">@Model.Transaction.Amount.ToString("C")</span></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Merchant:</td>
+                            <td>
+                                @Model.Transaction.Merchant.Name
+                                <small class="text-muted">(Risk: @Model.Transaction.Merchant.MerchantRiskScore.ToString("P"))</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Status:</td>
+                            <td><status-badge status="@Model.Transaction.Status"></status-badge></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Timestamp:</td>
+                            <td>@Model.Transaction.Timestamp.ToString("F")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4 border-info">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0">Account History</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <p class="mb-1 text-muted small">Account Holder</p>
+                        <p class="mb-0 fw-bold">@Model.Transaction.Account.HolderName</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p class="mb-1 text-muted small">Total Transactions</p>
+                        <p class="mb-0 fw-bold text-primary">@Model.AccountTransactionCount</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p class="mb-1 text-muted small">Total Spent</p>
+                        <p class="mb-0 fw-bold text-success">@Model.AccountTotalSpent.ToString("C")</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p class="mb-1 text-muted small">First Transaction</p>
+                        <p class="mb-0">
+                            @if (Model.IsFirstTransaction)
+                            {
+                                <span class="badge bg-warning text-dark">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0">Device Information</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted" style="width: 40%;">Device Hash:</td>
+                            <td><code>@Model.Transaction.Device.DeviceHash</code></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">IP Address:</td>
+                            <td><code>@Model.Transaction.Device.LastIp</code></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Location:</td>
+                            <td>@Model.Transaction.Device.LastGeo</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">New Device:</td>
+                            <td>
+                                @if (Model.IsNewDevice)
+                                {
+                                    <span class="badge bg-warning text-dark">Yes</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Device Transaction Count:</td>
+                            <td>@Model.DeviceTransactionCount</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.RelatedAlerts.Any())
+{
+    <div class="card shadow-sm">
+        <div class="card-header bg-light border-bottom">
+            <h5 class="mb-0">Related Fraud Alerts (@Model.RelatedAlerts.Count)</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Alert ID</th>
+                            <th>Level</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var alert in Model.RelatedAlerts)
+                        {
+                            <tr>
+                                <td><strong>#@alert.AlertId</strong></td>
+                                <td><alert-level level="@alert.AlertLevel"></alert-level></td>
+                                <td><status-badge status="@alert.Status"></status-badge></td>
+                                <td><small class="text-muted">@alert.CreatedAt.ToString("g")</small></td>
+                                <td>
+                                    <a asp-controller="FraudAlert" asp-action="Review" asp-route-id="@alert.AlertId" class="btn btn-sm btn-outline-primary">
+                                        Review
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to Transactions</a>
+    <a asp-action="ByAccount" asp-route-accountId="@Model.Transaction.AccountId" class="btn btn-outline-primary">View Account History</a>
+    <a asp-action="Details" asp-route-id="@Model.Transaction.TransactionId" class="btn btn-outline-info">Simple Details</a>
+</div>

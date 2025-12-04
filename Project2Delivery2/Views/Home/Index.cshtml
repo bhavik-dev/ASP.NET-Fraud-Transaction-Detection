@@ -1,0 +1,83 @@
+﻿@{
+    ViewBag.Title = "Home";
+}
+
+<!-- REMOVED outer container div -->
+
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">Welcome to Fraud Detection System</h1>
+    <p class="lead">Protect your business from fraudulent transactions with real-time monitoring and analysis.</p>
+    <hr class="my-4">
+    <p>Advanced AI-powered fraud detection with comprehensive analytics and reporting.</p>
+    <a class="btn btn-primary btn-lg" asp-controller="Transaction" asp-action="Index" role="button">
+        Get Started
+    </a>
+</div>
+
+@* Cache Tag Helper - caches this content for 60 seconds *@
+<cache expires-after="@TimeSpan.FromSeconds(60)">
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <span class="display-1">🔍</span>
+                    </div>
+                    <h3 class="card-title">Real-Time Monitoring</h3>
+                    <p class="card-text">Monitor transactions and detect suspicious activities in real-time.</p>
+                    <a asp-controller="Transaction" asp-action="Index" class="btn btn-outline-primary">
+                        View Transactions
+                    </a>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>Cached at: @DateTime.Now.ToString("T")</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <span class="display-1">⚠️</span>
+                    </div>
+                    <h3 class="card-title">Fraud Alerts</h3>
+                    <p class="card-text">Get instant alerts for high-risk transactions and take immediate action.</p>
+                    <a asp-controller="FraudAlert" asp-action="Index" class="btn btn-outline-danger">
+                        View Alerts
+                    </a>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>Cached at: @DateTime.Now.ToString("T")</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <span class="display-1">📊</span>
+                    </div>
+                    <h3 class="card-title">Risk Analysis</h3>
+                    <p class="card-text">Advanced risk scoring and pattern detection using machine learning.</p>
+                    <a asp-controller="Transaction" asp-action="DetailedView" asp-route-id="2" class="btn btn-outline-info">
+                        View Analysis
+                    </a>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>Cached at: @DateTime.Now.ToString("T")</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</cache>
+
+@* Cache with vary-by-query *@
+<cache expires-after="@TimeSpan.FromMinutes(5)" vary-by-query="filter">
+    <div class="alert alert-info mt-4">
+        <h4 class="alert-heading">System Status</h4>
+        <p>All systems operational. Last check: @DateTime.Now.ToString("F")</p>
+        <p class="mb-0">This content is cached for 5 minutes and varies by query string.</p>
+    </div>
+</cache>

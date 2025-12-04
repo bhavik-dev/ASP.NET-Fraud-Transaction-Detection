@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Project2Delivery2.DataAccessLayer/Project2Delivery2.DataAccessLayer.csproj" />
+  <Project Path="Project2Delivery2/Project2Delivery2.csproj" />
+</Solution>

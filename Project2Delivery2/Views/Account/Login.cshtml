@@ -1,0 +1,83 @@
+﻿@model LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">🔐 Login</h3>
+            </div>
+            <div class="card-body">
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <strong>⚠️ Error!</strong>
+                        <ul class="mb-0 mt-2">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form asp-action="Login" method="post">
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" placeholder="Enter username" autofocus />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" type="password" placeholder="Enter password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                        <label asp-for="RememberMe" class="form-check-label">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            🔐 Login
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+
+                <div class="text-center">
+                    <p class="text-muted mb-2">Don't have an account?</p>
+                    <a asp-action="Register" class="btn btn-outline-success btn-lg w-100">
+                        ✨ Create Account
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-3 bg-light border">
+            <div class="card-body">
+                <h6 class="text-muted">🔒 Security Features</h6>
+                <ul class="small text-muted mb-0">
+                    <li>Account lockout after 5 failed attempts</li>
+                    <li>Passwords are securely hashed</li>
+                    <li>Strong password requirements</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

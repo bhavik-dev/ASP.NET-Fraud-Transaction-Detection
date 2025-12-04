@@ -1,0 +1,145 @@
+﻿@model List<FraudAlert>
+
+@{
+    ViewBag.Title = "Fraud Alerts";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="display-4">Fraud Alert Dashboard</h2>
+        <p class="lead text-muted">Monitor and manage fraud alerts in real-time</p>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>✓ Success!</strong> @TempData["SuccessMessage"]
+        @if (TempData["UpdatedCount"] != null)
+        {
+            <span>(@TempData["UpdatedCount"] alert(s) updated)</span>
+        }
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>✗ Error!</strong> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* Lighter Statistics Cards *@
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card border-danger shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-danger">Open Alerts</h6>
+                <p class="display-6 mb-0 text-danger">@Model.Count(a => a.Status == "Open")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-warning shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-warning">Under Review</h6>
+                <p class="display-6 mb-0 text-warning">@Model.Count(a => a.Status == "Under Review")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-dark shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-dark">High Priority</h6>
+                <p class="display-6 mb-0 text-dark">@Model.Count(a => a.AlertLevel == "High")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-info shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-info">Total Alerts</h6>
+                <p class="display-6 mb-0 text-info">@Model.Count</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Alerts Table *@
+@if (Model.Any())
+{
+    <div class="card shadow-sm">
+        <div class="card-header bg-light border-bottom">
+            <h5 class="mb-0 text-dark">Alert List</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Alert ID</th>
+                            <th>Transaction ID</th>
+                            <th>Alert Level</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var alert in Model)
+                        {
+                            <tr>
+                                <td><strong>#@alert.AlertId</strong></td>
+                                <td>
+                                    <a asp-controller="Transaction" asp-action="Details" asp-route-id="@alert.TransactionId" class="text-decoration-none">
+                                        TXN-@alert.TransactionId
+                                    </a>
+                                </td>
+                                <td>
+                                    <alert-level level="@alert.AlertLevel"></alert-level>
+                                </td>
+                                <td>
+                                    <status-badge status="@alert.Status"></status-badge>
+                                </td>
+                                <td>
+                                    <small class="text-muted">@alert.CreatedAt.ToString("g")</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Review" asp-route-id="@alert.AlertId" class="btn btn-sm btn-outline-primary">
+                                            Review
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@alert.AlertId" class="btn btn-sm btn-outline-secondary">
+                                            Details
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-light border" role="alert">
+        <h4 class="alert-heading">No Alerts Found</h4>
+        <p class="text-muted">There are currently no fraud alerts in the system.</p>
+    </div>
+}
+
+@section scripts {
+    <script>
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert-dismissible');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+}

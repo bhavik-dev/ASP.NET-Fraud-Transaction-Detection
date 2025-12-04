@@ -1,0 +1,109 @@
+﻿@model List<Transaction>
+
+@{
+    ViewBag.Title = "Transactions by Account";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="display-5">Account Transactions</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item"><a asp-action="Index">Transactions</a></li>
+                <li class="breadcrumb-item active">Account History</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Account Summary</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <h6 class="text-muted">Account Holder</h6>
+                    <p class="fs-5 fw-bold">@Model.First().Account.HolderName</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-muted">Account Number</h6>
+                    <p class="fs-5"><code>@Model.First().Account.AccountNumber</code></p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-muted">Total Transactions</h6>
+                    <p class="fs-5 fw-bold text-primary">@Model.Count</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-muted">Total Amount</h6>
+                    <p class="fs-5 fw-bold text-success">@Model.Sum(t => t.Amount).ToString("C")</p>
+                </div>
+            </div>
+            <hr>
+            <p class="mb-0"><strong>Account Created:</strong> @Model.First().Account.CreatedAt.ToString("D")</p>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Reference</th>
+                            <th>Merchant</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in Model.OrderByDescending(t => t.Timestamp))
+                        {
+                            <tr>
+                                <td>@transaction.Timestamp.ToString("g")</td>
+                                <td><code>@transaction.TransactionRef</code></td>
+                                <td>@transaction.Merchant.Name</td>
+                                <td>
+                                    @if (transaction.Amount > 1000)
+                                    {
+                                        <strong class="text-danger">@transaction.Amount.ToString("C")</strong>
+                                    }
+                                    else
+                                    {
+                                        <span>@transaction.Amount.ToString("C")</span>
+                                    }
+                                </td>
+                                <td>
+                                    <status-badge status="@transaction.Status"></status-badge>
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@transaction.TransactionId" class="btn btn-sm btn-outline-primary">
+                                        Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">No Transactions Found</h4>
+        <p>There are no transactions found for this account.</p>
+    </div>
+}
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary btn-lg">
+        <i class="bi bi-arrow-left"></i> Back to All Transactions
+    </a>
+</div>
