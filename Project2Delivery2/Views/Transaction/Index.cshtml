@@ -1,0 +1,158 @@
+﻿@model List<Transaction>
+
+@{
+    ViewBag.Title = "Transactions";
+
+    @* Razor Comment: This view demonstrates Razor syntax and Bootstrap integration *@
+
+    // Calculate statistics using Razor
+    var totalAmount = Model.Sum(t => t.Amount);
+    var avgAmount = Model.Average(t => t.Amount);
+    var flaggedCount = Model.Count(t => t.Status == "Flagged");
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="display-4">@ViewData["PageTitle"]</h2>
+        <p class="lead text-muted">Comprehensive transaction monitoring and analysis</p>
+    </div>
+</div>
+
+@* Lighter Statistics Cards *@
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card border-primary shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-primary">Total Transactions</h6>
+                <p class="display-6 mb-0 text-primary">@ViewData["TotalCount"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-danger shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-danger">Flagged</h6>
+                <p class="display-6 mb-0 text-danger">@flaggedCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-success shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-success">Total Amount</h6>
+                <p class="display-6 mb-0 text-success">@totalAmount.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-info shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-info">Average Amount</h6>
+                <p class="display-6 mb-0 text-info">@avgAmount.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Conditional Rendering using Razor if/else *@
+@if (Model.Any())
+{
+    <div class="row mb-3">
+        <div class="col">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New Transaction
+            </a>
+        </div>
+    </div>
+
+    @* Bootstrap Table - Lighter Style *@
+    <div class="card shadow-sm">
+        <div class="card-header bg-light border-bottom">
+            <h5 class="mb-0 text-dark">Transaction List</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Reference</th>
+                            <th>Account</th>
+                            <th>Merchant</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @* Razor foreach loop *@
+                        @foreach (var transaction in Model)
+                        {
+                            <tr>
+                                <td>@transaction.TransactionId</td>
+                                <td>
+                                    <code>@transaction.TransactionRef</code>
+                                </td>
+                                <td>@transaction.Account.HolderName</td>
+                                <td>
+                                    <span class="text-truncate d-inline-block" style="max-width: 150px;" title="@transaction.Merchant.Name">
+                                        @transaction.Merchant.Name
+                                    </span>
+                                </td>
+                                <td>
+                                    @* Conditional formatting for large amounts *@
+                                    @if (transaction.Amount > 1000)
+                                    {
+                                        <strong class="text-danger">@transaction.Amount.ToString("C")</strong>
+                                    }
+                                    else
+                                    {
+                                        <span>@transaction.Amount.ToString("C")</span>
+                                    }
+                                </td>
+                                <td>
+                                    @* Using Custom Tag Helper *@
+                                    <status-badge status="@transaction.Status"></status-badge>
+                                </td>
+                                <td>
+                                    <small class="text-muted">@transaction.Timestamp.ToString("g")</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details"
+                                           asp-route-id="@transaction.TransactionId"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Details
+                                        </a>
+                                        <a asp-action="DetailedView"
+                                           asp-route-id="@transaction.TransactionId"
+                                           class="btn btn-sm btn-outline-info">
+                                            Analysis
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    @* Razor else block for empty state *@
+    <div class="alert alert-light border" role="alert">
+        <h4 class="alert-heading">No Transactions Found</h4>
+        <p class="text-muted">There are no transactions to display. Create your first transaction to get started.</p>
+        <hr>
+        <a asp-action="Create" class="btn btn-primary">Create Transaction</a>
+    </div>
+}
+
+@section scripts {
+    <script>
+        console.log('Transaction Index page loaded at: @DateTime.Now');
+    </script>
+}

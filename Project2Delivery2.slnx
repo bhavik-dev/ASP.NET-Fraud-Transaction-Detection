@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Project2Delivery2.DataAccessLayer/Project2Delivery2.DataAccessLayer.csproj" />
+  <Project Path="Project2Delivery2.Tests/Project2Delivery2.Tests.csproj" Id="45950931-536b-4f2c-a030-38fa9ceb138f" />
+  <Project Path="Project2Delivery2/Project2Delivery2.csproj" />
+</Solution>

@@ -1,0 +1,83 @@
+﻿@{
+    ViewBag.Title = "URL Validation Test Result";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header @(ViewBag.IsLocal ? "bg-success" : "bg-danger") text-white">
+                <h3 class="mb-0">URL Validation Test Result</h3>
+            </div>
+            <div class="card-body">
+
+                <div class="alert @(ViewBag.IsLocal ? "alert-success" : "alert-danger")">
+                    <h4>@ViewBag.Result</h4>
+                </div>
+
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th style="width: 30%;">Test URL:</th>
+                            <td><code>@ViewBag.TestUrl</code></td>
+                        </tr>
+                        <tr>
+                            <th>Url.IsLocalUrl() Result:</th>
+                            <td>
+                                @if (ViewBag.IsLocal)
+                                {
+                                    <span class="badge bg-success fs-6">TRUE</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger fs-6">FALSE</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Security Action:</th>
+                            <td>
+                                @if (ViewBag.IsLocal)
+                                {
+                                    <span class="text-success">✅ This URL would be ALLOWED for redirect</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">❌ This URL would be BLOCKED from redirect</span>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="mt-4">
+                    <h5>Explanation:</h5>
+                    @if (ViewBag.IsLocal)
+                    {
+                        <p>This URL is considered <strong>local</strong> because it:</p>
+                        <ul>
+                            <li>Starts with "/" (relative path)</li>
+                            <li>Does not contain a protocol (http://, https://)</li>
+                            <li>Points to a resource on the same domain</li>
+                        </ul>
+                        <p class="text-success">✅ <strong>Secure:</strong> The application will allow redirection to this URL.</p>
+                    }
+                    else
+                    {
+                        <p>This URL is considered <strong>external</strong> because it:</p>
+                        <ul>
+                            <li>Contains a full protocol (http:// or https://)</li>
+                            <li>Points to a different domain</li>
+                            <li>Could be used for phishing attacks</li>
+                        </ul>
+                        <p class="text-danger">❌ <strong>Blocked:</strong> The application will NOT redirect to this URL and will go to the Home page instead.</p>
+                    }
+                </div>
+
+                <div class="mt-4">
+                    <a asp-action="Index" class="btn btn-primary">Back to Security Demo</a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

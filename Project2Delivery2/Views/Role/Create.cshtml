@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Create Role";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">Create New Role</h3>
+            </div>
+            <div class="card-body">
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <form asp-action="Create" method="post">
+
+                    <div class="mb-3">
+                        <label for="roleName" class="form-label">Role Name</label>
+                        <input type="text" name="roleName" class="form-control" placeholder="e.g., Manager, Supervisor" required />
+                        <div class="form-text">Enter a descriptive name for the new role</div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            Create Role
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

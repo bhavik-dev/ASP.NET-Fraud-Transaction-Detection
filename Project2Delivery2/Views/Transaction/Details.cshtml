@@ -1,0 +1,190 @@
+﻿@model Transaction
+
+@{
+    ViewBag.Title = "Transaction Details";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="display-5">Transaction Details - @Model.TransactionRef</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item"><a asp-action="Index">Transactions</a></li>
+                <li class="breadcrumb-item active">Details</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+@if (ViewBag.HighRisk)
+{
+    <div class="alert @ViewBag.AlertClass" role="alert">
+        <strong>⚠️ Risk Alert:</strong> @ViewBag.AlertMessage
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light border-bottom">
+                <h4 class="mb-0">Transaction Information</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted" style="width: 30%;">Transaction ID:</td>
+                            <td><strong>@Model.TransactionId</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Reference:</td>
+                            <td><code>@Model.TransactionRef</code></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Amount:</td>
+                            <td><span class="fs-4 fw-bold text-success">@Model.Amount.ToString("C")</span></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Currency:</td>
+                            <td>@Model.Currency</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Status:</td>
+                            <td><status-badge status="@Model.Status"></status-badge></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Timestamp:</td>
+                            <td>@Model.Timestamp.ToString("F")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light border-bottom">
+                <h4 class="mb-0">Account Information</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted" style="width: 30%;">Account Holder:</td>
+                            <td><strong>@Model.Account.HolderName</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Account Number:</td>
+                            <td><code>@Model.Account.AccountNumber</code></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Account ID:</td>
+                            <td>@Model.AccountId</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-light border-bottom">
+                <h4 class="mb-0">Merchant Information</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted" style="width: 30%;">Merchant Name:</td>
+                            <td><strong>@Model.Merchant.Name</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Category:</td>
+                            <td>@Model.Merchant.Category</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Risk Score:</td>
+                            <td>
+                                @if (Model.Merchant.MerchantRiskScore > 0.7m)
+                                {
+                                    <span class="badge bg-danger">@Model.Merchant.MerchantRiskScore.ToString("P")</span>
+                                }
+                                else if (Model.Merchant.MerchantRiskScore > 0.4m)
+                                {
+                                    <span class="badge bg-warning text-dark">@Model.Merchant.MerchantRiskScore.ToString("P")</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">@Model.Merchant.MerchantRiskScore.ToString("P")</span>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0">Device Information</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless table-sm">
+                    <tbody>
+                        <tr>
+                            <td class="text-muted">Device Hash:</td>
+                            <td><small><code>@Model.Device.DeviceHash</code></small></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">IP Address:</td>
+                            <td><small><code>@Model.Device.LastIp</code></small></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Location:</td>
+                            <td><small>@Model.Device.LastGeo</small></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">First Seen:</td>
+                            <td><small>@Model.Device.FirstSeen.ToString("d")</small></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @if (ViewBag.AlertCount > 0)
+        {
+            <div class="card shadow-sm mt-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">⚠️ Fraud Alerts</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Active Alerts:</strong> @ViewBag.AlertCount</p>
+                    <a asp-controller="FraudAlert" asp-action="Index" class="btn btn-outline-danger btn-sm">
+                        View All Alerts
+                    </a>
+                </div>
+            </div>
+        }
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="DetailedView" asp-route-id="@Model.TransactionId" class="btn btn-primary">
+                        📊 View Detailed Analysis
+                    </a>
+                    <a asp-action="ByAccount" asp-route-accountId="@Model.AccountId" class="btn btn-outline-primary">
+                        👤 View Account History
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        ← Back to All Transactions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,170 @@
+﻿@model FraudAlert
+
+@{
+    ViewBag.Title = "Alert Details";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="display-5">Fraud Alert Details - #@Model.AlertId</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item"><a asp-action="Index">Fraud Alerts</a></li>
+                <li class="breadcrumb-item active">Alert #@Model.AlertId</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light border-bottom">
+                <h4 class="mb-0">Alert Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong class="text-muted">Alert ID:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <span class="badge bg-light text-dark border">#@Model.AlertId</span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong class="text-muted">Alert Level:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <alert-level level="@Model.AlertLevel"></alert-level>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong class="text-muted">Status:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        <status-badge status="@Model.Status"></status-badge>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong class="text-muted">Created At:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        @Model.CreatedAt.ToString("F")
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong class="text-muted">Assigned To:</strong>
+                    </div>
+                    <div class="col-md-8">
+                        @if (Model.AssignedTo.HasValue)
+                        {
+                            <span class="badge bg-light text-primary border">User #@Model.AssignedTo.Value</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Unassigned</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Transaction != null)
+        {
+            <div class="card shadow-sm">
+                <div class="card-header bg-light border-bottom">
+                    <h4 class="mb-0">Related Transaction</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong class="text-muted">Transaction ID:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <code>@Model.Transaction.TransactionId</code>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong class="text-muted">Reference:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <code>@Model.Transaction.TransactionRef</code>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong class="text-muted">Amount:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            <strong class="text-danger fs-5">@Model.Transaction.Amount.ToString("C")</strong>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong class="text-muted">Merchant:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.Transaction.Merchant.Name
+                            <small class="text-muted">(@Model.Transaction.Merchant.Category)</small>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong class="text-muted">Account:</strong>
+                        </div>
+                        <div class="col-md-8">
+                            @Model.Transaction.Account.HolderName
+                            <small class="text-muted">(@Model.Transaction.Account.AccountNumber)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0">Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="Review" asp-route-id="@Model.AlertId" class="btn btn-primary">
+                        <i class="bi bi-pencil"></i> Review Alert
+                    </a>
+
+                    @if (Model.Transaction != null)
+                    {
+                        <a asp-controller="Transaction" asp-action="Details" asp-route-id="@Model.TransactionId" class="btn btn-outline-primary">
+                            <i class="bi bi-credit-card"></i> View Full Transaction
+                        </a>
+                    }
+
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Alerts
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-3 border-info">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0">Quick Stats</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-2">
+                    <strong

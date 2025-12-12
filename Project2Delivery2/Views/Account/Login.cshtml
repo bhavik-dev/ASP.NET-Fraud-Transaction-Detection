@@ -1,0 +1,104 @@
+﻿@model LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">🔐 Login</h3>
+            </div>
+            <div class="card-body">
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <strong>⚠️ Error!</strong>
+                        <ul class="mb-0 mt-2">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form asp-action="Login" method="post">
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" placeholder="Enter username" autofocus />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" type="password" placeholder="Enter password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                        <label asp-for="RememberMe" class="form-check-label">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            🔐 Login
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+
+                <div class="text-center">
+                    <p class="text-muted mb-3">Or continue with</p>
+
+                    <form asp-controller="Account" asp-action="ExternalLogin" method="post">
+                        <input type="hidden" name="provider" value="Google" />
+                        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                        <button type="submit" class="btn btn-outline-danger btn-lg w-100">
+                            <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="me-2" style="vertical-align: middle;">
+                                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+                                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                            </svg>
+                            Continue with Google
+                        </button>
+                    </form>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="text-center">
+                    <p class="text-muted mb-2">Don't have an account?</p>
+                    <a asp-action="Register" class="btn btn-outline-success btn-lg w-100">
+                        ✨ Create Account
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-3 bg-light border">
+            <div class="card-body">
+                <h6 class="text-muted">🔒 Security Features</h6>
+                <ul class="small text-muted mb-0">
+                    <li>Account lockout after 5 failed attempts</li>
+                    <li>Passwords are securely hashed</li>
+                    <li>Strong password requirements</li>
+                    <li>Google authentication available</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "File Upload";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Upload Files</h3>
+            </div>
+            <div class="card-body">
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>✓ Success!</strong> @Html.Raw(TempData["SuccessMessage"])
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>✗ Error!</strong> @Html.Raw(TempData["ErrorMessage"])
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form asp-action="Upload" method="post" enctype="multipart/form-data">
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Select Files to Upload</label>
+                        <input type="file"
+                               name="files"
+                               class="form-control"
+                               multiple
+                               accept=".pdf,.jpg,.jpeg,.png,.docx"
+                               required />
+                        <div class="form-text">
+                            <strong>Allowed file types:</strong>JPG, PNG<br />
+                            <strong>Maximum file size:</strong> 10 MB per file<br />
+                            <strong>Multiple files:</strong> You can select multiple files at once
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>📌 File Upload Rules:</strong>
+                        <ul class="mb-0">
+                            <li>Maximum 10 MB per file</li>
+                            <li>Only PDF, JPG, PNG, and DOCX files allowed</li>
+                            <li>You can upload multiple files at once</li>
+                            <li>Files will be validated before upload</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-upload"></i> Upload Files
+                        </button>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-lg">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
