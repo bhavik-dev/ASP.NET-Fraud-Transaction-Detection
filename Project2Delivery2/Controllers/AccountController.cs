@@ -161,7 +161,7 @@ namespace Project2Delivery2.Controllers
             {
                 // User doesn't exist, create account
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+                var name = info.Principal.FindFirstValue(ClaimTypes.Name); 
 
                 if (email != null)
                 {
