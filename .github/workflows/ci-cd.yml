@@ -1,4 +1,4 @@
-name: Build and Test
+name: ASP.NET Core CI/CD
 
 on:
   push:
@@ -6,29 +6,57 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  DOTNET_VERSION: '9.0.x'
+
 jobs:
-  build:
+  build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: ${{ env.DOTNET_VERSION }}
     
     - name: Restore dependencies
-      run: dotnet restore Project2Delivery2/Project2Delivery2.csproj
+      run: dotnet restore
     
-    - name: Build
-      run: dotnet build Project2Delivery2/Project2Delivery2.csproj --configuration Release --no-restore
+    - name: Build solution
+      run: dotnet build --configuration Release --no-restore
     
-    - name: Test
+    - name: Run tests
       run: dotnet test --configuration Release --no-build --verbosity normal
     
-    - name: Publish
+    - name: Publish application
       run: dotnet publish Project2Delivery2/Project2Delivery2.csproj -c Release -o ./publish
     
-    - name: Success notification
-      run: echo "✅ Build and tests completed successfully!"
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: fraud-detection-app
+        path: ./publish
+    
+    - name: Build summary
+      run: |
+        echo " Build completed successfully!"
+        echo " Artifact uploaded: fraud-detection-app"
+        echo " Ready for deployment"
+
+  deploy-notification:
+    name: Deployment Ready
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Deployment notification
+      run: |
+        echo " Build passed! Application is ready for deployment"
+        echo " Branch: ${{ github.ref }}"
+        echo " Pushed by: ${{ github.actor }}"
+        echo " Commit: ${{ github.sha }}"
