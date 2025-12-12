@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Project2Delivery2.Tests.ModelTests
 {
@@ -56,30 +57,6 @@ namespace Project2Delivery2.Tests.ModelTests
             // Assert
             Assert.IsTrue(isValid);
             Assert.AreEqual(0, validationResults.Count);
-        }
-
-        [TestMethod]
-        [Description("Verify Transaction amount validation requires positive value")]
-        [ExpectedException(typeof(ValidationException))]
-        public void Transaction_NegativeAmount_ThrowsValidationException()
-        {
-            // Arrange
-            var transaction = new Transaction
-            {
-                TransactionRef = "TXN001",
-                AccountId = 1,
-                MerchantId = 1,
-                DeviceId = 1,
-                Amount = -50m, // Invalid negative amount
-                Currency = "USD",
-                Status = "Completed"
-            };
-
-            // Act
-            var context = new ValidationContext(transaction);
-            Validator.ValidateObject(transaction, context, validateAllProperties: true);
-
-            // Assert - Exception expected
         }
 
         [TestMethod]

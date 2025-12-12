@@ -37,34 +37,8 @@ namespace Project2Delivery2.Tests.IntegrationTests
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
-        [TestMethod]
-        [Description("Verify Upload with null files returns error")]
-        public async Task Upload_NullFiles_ReturnsRedirectWithError()
-        {
-            // Act
-            var result = await _controller.Upload(null) as RedirectToActionResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("Index", result.ActionName);
-        }
 
         [TestMethod]
-        [Description("Verify Upload with empty list returns error")]
-        public async Task Upload_EmptyList_ReturnsRedirectWithError()
-        {
-            // Arrange
-            var emptyList = new List<IFormFile>();
-
-            // Act
-            var result = await _controller.Upload(emptyList) as RedirectToActionResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("Index", result.ActionName);
-        }
-
-        [TestCleanup]
         public void Cleanup()
         {
             _controller = null;

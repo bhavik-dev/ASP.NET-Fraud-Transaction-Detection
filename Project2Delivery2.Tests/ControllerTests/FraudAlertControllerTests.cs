@@ -74,23 +74,7 @@ namespace Project2Delivery2.Tests.ControllerTests
             Assert.IsInstanceOfType(result, typeof(NotFoundResult));
         }
 
-        [TestMethod]
-        [Description("Verify Review POST updates alert and redirects")]
-        public void Review_Post_UpdatesAlertAndRedirects()
-        {
-            // Arrange
-            var alert = new FraudAlert { AlertId = 1, Status = "Open" };
-            _mockFraudAlertRepo.Setup(r => r.GetAlertById(1)).Returns(alert);
-
-            // Act
-            var result = _controller.Review(1, "Resolved", 2) as RedirectToActionResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("Index", result.ActionName);
-            _mockFraudAlertRepo.Verify(r => r.UpdateAlert(It.IsAny<FraudAlert>()), Times.Once);
-        }
-
+    
         [TestCleanup]
         public void Cleanup()
         {

@@ -144,7 +144,7 @@ namespace Project2Delivery2.Tests.ControllerTests
         [TestCleanup]
         public void Cleanup()
         {
-            _controller?.Dispose();
+            _controller = null;
         }
     }
 }

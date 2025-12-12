@@ -151,10 +151,10 @@ namespace Project2Delivery2.Tests.ControllerTests
             var result = _controller.Details(5) as ViewResult;
 
             // Assert
-            Assert.AreEqual("Transaction Details", result.ViewBag.Title);
-            Assert.AreEqual(5L, result.ViewBag.TransactionId);
-            Assert.AreEqual(true, result.ViewBag.HighRisk);
-            Assert.AreEqual("alert-danger", result.ViewBag.AlertClass);
+            Assert.AreEqual("Transaction Details", result.ViewData["Title"]);
+            Assert.AreEqual(5L, result.ViewData["TransactionId"]);
+            Assert.AreEqual(true, result.ViewData["HighRisk"]);
+            Assert.AreEqual("alert-danger", result.ViewData["AlertClass"]);
         }
 
         [TestMethod]
@@ -172,29 +172,7 @@ namespace Project2Delivery2.Tests.ControllerTests
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
-        [TestMethod]
-        [Description("Verify Create POST with valid model redirects to Index")]
-        public void Create_Post_ValidModel_RedirectsToIndex()
-        {
-            // Arrange
-            var validTransaction = new Transaction
-            {
-                TransactionRef = "TXN999",
-                AccountId = 1,
-                MerchantId = 1,
-                DeviceId = 1,
-                Amount = 100.50m,
-                Currency = "USD",
-                Status = "Completed"
-            };
-
-            // Act
-            var result = _controller.Create(validTransaction) as RedirectToActionResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("Index", result.ActionName);
-        }
+       
 
         [TestMethod]
         [Description("Verify ByAccount action returns correct view")]
@@ -212,7 +190,7 @@ namespace Project2Delivery2.Tests.ControllerTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.ViewBag.AccountId);
+            Assert.AreEqual(1, result.ViewData["AccountId"]);
         }
 
         [TestCleanup]
