@@ -18,14 +18,17 @@ jobs:
       with:
         dotnet-version: '9.0.x'
     
-    - name: Restore dependencies
-      run: dotnet restore
+    - name: Restore Web Project
+      run: dotnet restore Project2Delivery2/Project2Delivery2.csproj
     
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+    - name: Build Web Project
+      run: dotnet build Project2Delivery2/Project2Delivery2.csproj --configuration Release --no-restore
     
-    - name: Publish
+    - name: Publish Web Project
       run: dotnet publish Project2Delivery2/Project2Delivery2.csproj -c Release -o ./publish
     
-    - name: Success
-      run: echo "✅ Build completed successfully!"
+    - name: Build Summary
+      run: |
+        echo "✅ Build completed successfully!"
+        echo "📦 Application published to ./publish"
+        echo "🎯 Ready for deployment!"
